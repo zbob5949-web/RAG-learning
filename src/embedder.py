@@ -11,8 +11,8 @@ class Embedder:
         self.model=SentenceTransformer(self.model_name)
         print("模型加载完成！")
     def embed_texts(self,texts:list[str])->list[list[float]]:
-        embeddings=self.model.encode(texts,nomalize_embeddings=True)
-        return embeddings.tolist()_
+        embeddings=self.model.encode(texts,normalize_embeddings=True)
+        return embeddings.tolist()
     
     def embed_query(self, query: str) -> list[float]:
         """将用户问题转为向量"""

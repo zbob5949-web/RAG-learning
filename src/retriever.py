@@ -7,14 +7,15 @@ from config import CHROMA_PERSIST_DIR,TOP_K
 class Retriever:
     def __init__(self,embedder,collection_name:str="rag_docs"):
         self.embedder=embedder
+        self.collection_name = collection_name
         self.client=chromadb.PersistentClient(
             path=CHROMA_PERSIST_DIR,
             settings=Settings(anonymized_telemetry=False)#关闭默认传参
         )
 
         self.collection=self.client.get_or_create_collection(
-            name=collection_name
-            metadatas={"hnsw:space":coisne}#使用余弦相似度
+            name=self.collection_name,
+            metadata={"hnsw:space":"cosine"}#使用余弦相似度
         )
 
         print(f"向量数据库就绪，当前文档数: {self.collection.count()}")
@@ -32,14 +33,16 @@ class Retriever:
 
 
         #准备存入数据库的数据
-        ids=[f"chunk_{i}"for i in range(len(chunks))]
-        metadata=[
-            {"source":chunks["source"],"chunk_id":chunks["id"]}
+        ids=[f"chunk_{i}" for i in range(len(chunks))]
+        metadatas=[
+            {"source":chunk["source"],"chunk_id":chunk["chunk_id"]}
+            for chunk in chunks
         ]
         #写入chroma数据库
         self.collection.add(
-            ids=ids
-            embeddings=embeddings
+            ids=ids,
+            embeddings=embeddings,
+            documents=texts,
             metadatas=metadatas
         )
         print(f"已存入 {len(chunks)} 个文本块到向量数据库")
@@ -108,6 +111,6 @@ if __name__ == "__main__":
 
     # 5. 测试检索
     print("=" * 50)
-    query = "什么是RAG？"
+    query = "什么是RAG?"
     print(f"搜索问题: {query}")
 
