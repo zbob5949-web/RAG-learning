@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from config import DOCS_DIR
+from src.config import DOCS_DIR
 
 
 def load_single_file(file_path:str)->str:

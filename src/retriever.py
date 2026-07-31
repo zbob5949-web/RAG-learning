@@ -1,6 +1,6 @@
 import chromadb
 from chromadb.config import Settings
-from config import CHROMA_PERSIST_DIR,TOP_K
+from src.config import CHROMA_PERSIST_DIR,TOP_K
 
 
 #向量检索器
